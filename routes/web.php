@@ -25,4 +25,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles','RoleController');
     Route::resource('users','UserController');
     Route::resource('products','ProductController');
+    Route::resource('permissions', 'PermissionController');
+
+    // Route::get('/products/broadcast/{product}' , [ProductController::class, 'broadcast'])->name('products.broadcast');
+    Route::get('/products/broadcast/{product}', 'ProductController@broadcast')->name('products.broadcast');;
 });

@@ -2,10 +2,10 @@
     
 namespace App\Http\Controllers;
     
-use App\Models\Product;
+use App\Models\Permission;
 use Illuminate\Http\Request;
     
-class ProductController extends Controller
+class PermissionController extends Controller
 { 
     /**
      * Display a listing of the resource.
@@ -14,11 +14,10 @@ class ProductController extends Controller
      */
     function __construct()
     {
-         $this->middleware('permission:product-list|product-create|product-edit|product-delete', ['only' => ['index','show']]);
-         $this->middleware('permission:product-create', ['only' => ['create','store']]);
-         $this->middleware('permission:product-edit', ['only' => ['edit','update']]);
-         $this->middleware('permission:product-delete', ['only' => ['destroy']]);
-         $this->middleware('permission:product-broadcast', ['only' => ['broadcast']]);
+         $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete', ['only' => ['index','show']]);
+         $this->middleware('permission:permission-create', ['only' => ['create','store']]);
+         $this->middleware('permission:permission-edit', ['only' => ['edit','update']]);
+         $this->middleware('permission:permission-delete', ['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
@@ -27,8 +26,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::latest()->paginate(5);
-        return view('products.index',compact('products'))
+        $permissions = Permission::latest()->paginate(5);
+        return view('permissions.index',compact('permissions'))
             ->with('i', (request()->input('page', 1) - 1) * 5);
     }
     
@@ -39,7 +38,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        return view('permissions.create');
     }
     
     /**
@@ -52,73 +51,68 @@ class ProductController extends Controller
     {
         request()->validate([
             'name' => 'required',
-            'detail' => 'required',
+            'guard_name' => 'required',
+            
         ]);
-    
-        Product::create($request->all());
-    
-        return redirect()->route('products.index')
-                        ->with('success','Product created successfully.');
+       
+        Permission::create($request->all());
+        
+        return redirect()->route('permissions.index')
+                        ->with('success','Permission created successfully.');
     }
     
     /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Product  $permission
      * @return \Illuminate\Http\Response
      */
-    public function show(Product $product)
+    public function show(Permission $permission)
     {
-        return view('products.show',compact('product'));
-    }
-
-    public function broadcast(Product $product)
-    {
-        return view('products.show',compact('product'));
+        return view('permissions.show',compact('permission'));
     }
     
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Product  $permission
      * @return \Illuminate\Http\Response
      */
-    public function edit(Product $product)
+    public function edit(Permission $permission)
     {
-        return view('products.edit',compact('product'));
+        return view('permissions.edit',compact('permission'));
     }
     
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Product  $product
+     * @param  \App\Product  $permission
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Permission $permission)
     {
          request()->validate([
             'name' => 'required',
-            'detail' => 'required',
         ]);
     
-        $product->update($request->all());
+        $permission->update($request->all());
     
-        return redirect()->route('products.index')
+        return redirect()->route('permissions.index')
                         ->with('success','Product updated successfully');
     }
     
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Product  $product
+     * @param  \App\Product  $permission
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy(Permission $permission)
     {
-        $product->delete();
+        $permission->delete();
     
-        return redirect()->route('products.index')
+        return redirect()->route('permissions.index')
                         ->with('success','Product deleted successfully');
     }
 }
